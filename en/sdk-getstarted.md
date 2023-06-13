@@ -42,7 +42,7 @@ go mod tidy
 
 ### 3. Constructing the API Signature
 
-see [how to create api signature](https://github.com/crelaber123/somedocs/blob/main/en/api-signature.md)
+see [how to construct api signature](https://github.com/crelaber123/somedocs/blob/main/en/api-signature.md)
 
 ## Complete Example
 

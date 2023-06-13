@@ -1,5 +1,5 @@
 
-## How to create api signature
+## How to construct api signature
 
 **Preparation**
 
