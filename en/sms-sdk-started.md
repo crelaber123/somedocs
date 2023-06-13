@@ -48,6 +48,6 @@ go mod tidy
 
 ### 4. Constructing the API Signature
 
-​	see [how to create api signature](https://console.uspeedo.com/dashboard)
+​	see [how to create api signature](https://github.com/crelaber123/somedocs/blob/main/en/api-signature.md)
 
 ## Complete Example

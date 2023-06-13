@@ -1,11 +1,11 @@
 
 ## How to construct api signature
 
-**Preparation**
+### Preparation
 
 When generating the signature (`X-Signature`) in an API request, you need to provide the `AccessKeyId` and `AccessKeySecret`, which can be obtained from your console account.
 
-**Constructing the Signature String**
+#### Constructing the Signature String
 
 To generate the signature, follow these steps:
 
@@ -54,70 +54,3 @@ API requests require the signature information to be passed through the HTTP hea
 - `X-Timestamp`: The timestamp (within five minutes)
 - `X-Nonce`: A random string
 - `X-Access-Key-Id`: The `AccessKeyId` of the console account
-
-### Complete Example
-
-```go
-package main
-
-import (
-    "encoding/json"
-    "fmt"
-    "github.com/uSpeedo/usms-sdk-go/private/utils"
-    "time"
-
-    "github.com/uSpeedo/usms-sdk-go/services/usms"
-    "github.com/uSpeedo/usms-sdk-go/um"
-    "github.com/uSpeedo/usms-sdk-go/um/auth"
-    "github.com/uSpeedo/usms-sdk-go/um/config"
-    "github.com/uSpeedo/usms-sdk-go/um/log"
-)
-
-func main() {
-    cfg := config.NewConfig()
-    cfg.LogLevel = log.DebugLevel
-
-    credential := auth.NewCredential()
-    credential.AccessKeyId = "your AccessKeyId"
-    credential.AccessKeySecret = "your AccessKeySecret"
-
-    client := usms.NewClient(&cfg, &credential)
-    // send request
-    req := client.NewSendBatchUSMSMessageRequest()
-    req.AccountId = um.Int(0)
-    req.Action = um.String("SendBatchUSMSMessage")
-    req.TaskContent = []usms.SendBatchInfo{
-       {
-          TemplateId: "your TemplateId",
-          SenderId:   "",
-          Target: []usms.SendBatchTarget{
-             {
-                Phone: "86130xxxx1321",
-             },
-             {
-                Phone: "86130xxxx1321",
-             },
-          },
-       },
-    }
-    //add header
-    req.SetNonce(utils.RandStr(10))
-    req.SetAccessKeyId(credential.AccessKeyId)
-    req.SetSignature(credential.CreateSign(JSONMethod(req)))
-    t, _ := time.ParseDuration("-2m")
-    req.SetTimestamp(time.Now().Add(t).Unix())
-    resp, err := client.SendBatchUSMSMessage(req)
-    if err != nil {
-       panic(err)
-    }
-    fmt.Printf("%+v", resp)
-}
-
-func JSONMethod(content interface{}) map[string]interface{} {
-    data, _ := json.Marshal(&content)
-    m := make(map[string]interface{})
-    _ = json.Unmarshal(data, &m)
-    return m
-}
-```
-
