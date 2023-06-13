@@ -6,6 +6,7 @@
 
 Before making API calls, you need to obtain API key information to generate the X-Signature header. You will need to provide the AccessKeyId and AccessKeySecret, which can be obtained from your console account. See the following link for obtain: [How to Obtain AccessKeyId and AccessKeySecret](https://console.uspeedo.com/dashboard).
 
+
 ## SDK Configuration
 
 ### Installation using `go get`

@@ -1,4 +1,5 @@
 
+## How to create api signature
 
 **Preparation**
 
@@ -37,7 +38,7 @@ MjI3YmYyMjItNmM4Mi00ZGM5LWEwNDQtN2EzZjM0Yzk2OWE1
 ActionDescribeUHostInstanceLimit10MjI3YmYyMjItNmM4Mi00ZGM5LWEwNDQtN2EzZjM0Yzk2OWE1
 ```
 
-**Calculate the Signature Value**
+**step 4: Calculate the Signature Value**
 
 Encode the unsigned string using SHA1 to generate the request signature.
 
@@ -45,7 +46,7 @@ Encode the unsigned string using SHA1 to generate the request signature.
 59b1c17e357b8433b502014e271e0615a0908513
 ```
 
-**Set HTTP Headers**
+**step 5: Set HTTP Headers**
 
 API requests require the signature information to be passed through the HTTP header. It must include the following four parameters:
 
@@ -53,3 +54,70 @@ API requests require the signature information to be passed through the HTTP hea
 - `X-Timestamp`: The timestamp (within five minutes)
 - `X-Nonce`: A random string
 - `X-Access-Key-Id`: The `AccessKeyId` of the console account
+
+### Complete Example
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "github.com/uSpeedo/usms-sdk-go/private/utils"
+    "time"
+
+    "github.com/uSpeedo/usms-sdk-go/services/usms"
+    "github.com/uSpeedo/usms-sdk-go/um"
+    "github.com/uSpeedo/usms-sdk-go/um/auth"
+    "github.com/uSpeedo/usms-sdk-go/um/config"
+    "github.com/uSpeedo/usms-sdk-go/um/log"
+)
+
+func main() {
+    cfg := config.NewConfig()
+    cfg.LogLevel = log.DebugLevel
+
+    credential := auth.NewCredential()
+    credential.AccessKeyId = "your AccessKeyId"
+    credential.AccessKeySecret = "your AccessKeySecret"
+
+    client := usms.NewClient(&cfg, &credential)
+    // send request
+    req := client.NewSendBatchUSMSMessageRequest()
+    req.AccountId = um.Int(0)
+    req.Action = um.String("SendBatchUSMSMessage")
+    req.TaskContent = []usms.SendBatchInfo{
+       {
+          TemplateId: "your TemplateId",
+          SenderId:   "",
+          Target: []usms.SendBatchTarget{
+             {
+                Phone: "86130xxxx1321",
+             },
+             {
+                Phone: "86130xxxx1321",
+             },
+          },
+       },
+    }
+    //add header
+    req.SetNonce(utils.RandStr(10))
+    req.SetAccessKeyId(credential.AccessKeyId)
+    req.SetSignature(credential.CreateSign(JSONMethod(req)))
+    t, _ := time.ParseDuration("-2m")
+    req.SetTimestamp(time.Now().Add(t).Unix())
+    resp, err := client.SendBatchUSMSMessage(req)
+    if err != nil {
+       panic(err)
+    }
+    fmt.Printf("%+v", resp)
+}
+
+func JSONMethod(content interface{}) map[string]interface{} {
+    data, _ := json.Marshal(&content)
+    m := make(map[string]interface{})
+    _ = json.Unmarshal(data, &m)
+    return m
+}
+```
+
