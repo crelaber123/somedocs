@@ -27,15 +27,15 @@ MjI3YmYyMjItNmM4Mi00ZGM5LWEwNDQtN2EzZjM0Yzk2OWE1
 
 ```json
 {
-    "Action": "DescribeUHostInstance",
-    "Limit": 10
+    "Action": "SendBatchUSMSMessage",
+    "AccountId": 0
 }
 ```
 
 **Step 3:** Combine the sorted parameters and their corresponding values into the format `parameter=parametervalue`. Append `AccessKeySecret` at the end of this signature string. The resulting string is the unsigned string.
 
 ```
-ActionDescribeUHostInstanceLimit10MjI3YmYyMjItNmM4Mi00ZGM5LWEwNDQtN2EzZjM0Yzk2OWE1
+AccountId0ActionSendBatchUSMSMessageMjI3YmYyMjItNmM4Mi00ZGM5LWEwNDQtN2EzZjM0Yzk2OWE1
 ```
 
 **step 4: Calculate the Signature Value**
@@ -43,7 +43,7 @@ ActionDescribeUHostInstanceLimit10MjI3YmYyMjItNmM4Mi00ZGM5LWEwNDQtN2EzZjM0Yzk2OW
 Encode the unsigned string using SHA1 to generate the request signature.
 
 ```
-59b1c17e357b8433b502014e271e0615a0908513
+cf44481ba31ec8d2943d0699e9e38062de44a7da
 ```
 
 **Step 5: Set HTTP Headers**
