@@ -2,13 +2,13 @@
 
 ## Preparation
 
-1. Obtain API Key Information
+#### Obtain API Key Information
 
 Before making API calls, you need to obtain API key information to generate the X-Signature header. You will need to provide the AccessKeyId and AccessKeySecret, which can be obtained from your console account. See the following link for obtain: [How to Obtain AccessKeyId and AccessKeySecret](https://console.uspeedo.com/dashboard).
 
 ## SDK Configuration
 
-### 1. Installation using `go get`
+### Installation using `go get`
 
 ```shell
 go get github.com/uSpeedo/{go-sdk}
@@ -41,72 +41,72 @@ go mod tidy
 
 ### 3. Constructing the API Signature
 
-​	see [how to create api signature](https://console.uspeedo.com/dashboard)
+see [how to create api signature](https://github.com/crelaber123/somedocs/blob/main/en/api-signature.md)
 
 ## Complete Example
 
-For a comprehensive SDK documentation, please refer to the following document: [SDK Documentation](https://example.com/)
+For a comprehensive SDK documentation, please refer to the following document: [SMS SDK GUIDE](https://github.com/crelaber123/somedocs/blob/main/en/sms-sdk-started.md)
 
 ```go
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/uSpeedo/usms-sdk-go/private/utils"
-	"time"
+    "encoding/json"
+    "fmt"
+    "github.com/uSpeedo/usms-sdk-go/private/utils"
+    "time"
 
-	"github.com/uSpeedo/usms-sdk-go/services/usms"
-	"github.com/uSpeedo/usms-sdk-go/um"
-	"github.com/uSpeedo/usms-sdk-go/um/auth"
-	"github.com/uSpeedo/usms-sdk-go/um/config"
-	"github.com/uSpeedo/usms-sdk-go/um/log"
+    "github.com/uSpeedo/usms-sdk-go/services/usms"
+    "github.com/uSpeedo/usms-sdk-go/um"
+    "github.com/uSpeedo/usms-sdk-go/um/auth"
+    "github.com/uSpeedo/usms-sdk-go/um/config"
+    "github.com/uSpeedo/usms-sdk-go/um/log"
 )
 
 func main() {
-	cfg := config.NewConfig()
-	cfg.LogLevel = log.DebugLevel
+    cfg := config.NewConfig()
+    cfg.LogLevel = log.DebugLevel
 
-	credential := auth.NewCredential()
-	credential.AccessKeyId = "your AccessKeyId"
-	credential.AccessKeySecret = "your AccessKeySecret"
+    credential := auth.NewCredential()
+    credential.AccessKeyId = "your AccessKeyId"
+    credential.AccessKeySecret = "your AccessKeySecret"
 
-	client := usms.NewClient(&cfg, &credential)
-	// send request
-	req := client.NewSendBatchUSMSMessageRequest()
-	req.AccountId = um.Int(0)
-	req.Action = um.String("SendBatchUSMSMessage")
-	req.TaskContent = []usms.SendBatchInfo{
-		{
-			TemplateId: "your TemplateId",
-			SenderId:   "",
-			Target: []usms.SendBatchTarget{
-				{
-					Phone: "86130xxxx1321",
-				},
-				{
-					Phone: "86130xxxx1321",
-				},
-			},
-		},
-	}
-	//add header
-	req.SetNonce(utils.RandStr(10))
-	req.SetAccessKeyId(credential.AccessKeyId)
-	req.SetSignature(credential.CreateSign(JSONMethod(req)))
-	t, _ := time.ParseDuration("-2m")
-	req.SetTimestamp(time.Now().Add(t).Unix())
-	resp, err := client.SendBatchUSMSMessage(req)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v", resp)
+    client := usms.NewClient(&cfg, &credential)
+    // send request
+    req := client.NewSendBatchUSMSMessageRequest()
+    req.AccountId = um.Int(0)
+    req.Action = um.String("SendBatchUSMSMessage")
+    req.TaskContent = []usms.SendBatchInfo{
+       {
+          TemplateId: "your TemplateId",
+          SenderId:   "",
+          Target: []usms.SendBatchTarget{
+             {
+                Phone: "86130xxxx1321",
+             },
+             {
+                Phone: "86130xxxx1321",
+             },
+          },
+       },
+    }
+    //add header
+    req.SetNonce(utils.RandStr(10))
+    req.SetAccessKeyId(credential.AccessKeyId)
+    req.SetSignature(credential.CreateSign(JSONMethod(req)))
+    t, _ := time.ParseDuration("-2m")
+    req.SetTimestamp(time.Now().Add(t).Unix())
+    resp, err := client.SendBatchUSMSMessage(req)
+    if err != nil {
+       panic(err)
+    }
+    fmt.Printf("%+v", resp)
 }
 
 func JSONMethod(content interface{}) map[string]interface{} {
-	data, _ := json.Marshal(&content)
-	m := make(map[string]interface{})
-	_ = json.Unmarshal(data, &m)
-	return m
+    data, _ := json.Marshal(&content)
+    m := make(map[string]interface{})
+    _ = json.Unmarshal(data, &m)
+    return m
 }
 ```
