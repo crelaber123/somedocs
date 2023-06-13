@@ -46,7 +46,7 @@ Encode the unsigned string using SHA1 to generate the request signature.
 59b1c17e357b8433b502014e271e0615a0908513
 ```
 
-**step 5: Set HTTP Headers**
+**Step 5: Set HTTP Headers**
 
 API requests require the signature information to be passed through the HTTP header. It must include the following four parameters:
 
